@@ -1,0 +1,73 @@
+{
+	"name": "ohaustatepublicparking",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "3fb50c21-a7b2-4449-8368-d9061e001fb2.csv",
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "id",
+				"type": "String"
+			},
+			{
+				"name": "ownerAgencyName",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "applications",
+				"type": "String"
+			},
+			{
+				"name": "projectStatus",
+				"type": "String"
+			},
+			{
+				"name": "businessValue",
+				"type": "String"
+			},
+			{
+				"name": "projectRisk",
+				"type": "String"
+			},
+			{
+				"name": "lifecycleCustom:plan",
+				"type": "String"
+			},
+			{
+				"name": "lifecycleCustom:phaseIn",
+				"type": "String"
+			},
+			{
+				"name": "lifecycleCustom:phaseOut",
+				"type": "String"
+			},
+			{
+				"name": "lifecycleCustom:endOfLife",
+				"type": "String"
+			},
+			{
+				"name": "lifecycleCustom:actualCompletion",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

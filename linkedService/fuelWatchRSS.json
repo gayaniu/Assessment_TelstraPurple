@@ -1,0 +1,14 @@
+{
+	"name": "fuelWatchRSS",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "This service will load data from fuelWatchRSS dataset from Government offcial web site in xml format",
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

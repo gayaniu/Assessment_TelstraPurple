@@ -1,0 +1,9 @@
+{
+	"name": "demogayanidatafactory",
+	"location": "australiaeast",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "01683f80-f695-40e7-94ab-b2a960e8f857",
+		"tenantId": "effd8c18-d2e1-489c-8566-5cf64de38f3b"
+	}
+}
