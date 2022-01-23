@@ -1,10 +1,28 @@
-/****** Object:  Schema [dw]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  Schema [dw]    Script Date: 23/01/2022 11:47:23 AM ******/
 CREATE SCHEMA [dw]
 GO
-/****** Object:  Schema [tempstage]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  Schema [tempstage]    Script Date: 23/01/2022 11:47:23 AM ******/
 CREATE SCHEMA [tempstage]
 GO
-/****** Object:  Table [dw].[DmBarnd]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  Table [dbo].[DW_Ingestion_Errors]    Script Date: 23/01/2022 11:47:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DW_Ingestion_Errors](
+	[ErrorID] [int] IDENTITY(1,1) NOT NULL,
+	[TableName] [varchar](100) NULL,
+	[UserName] [varchar](100) NULL,
+	[ErrorNumber] [int] NULL,
+	[ErrorState] [int] NULL,
+	[ErrorSeverity] [int] NULL,
+	[ErrorLine] [int] NULL,
+	[ErrorProcedure] [varchar](max) NULL,
+	[ErrorMessage] [varchar](max) NULL,
+	[ErrorDateTime] [datetime] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dw].[DmBarnd]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -18,7 +36,7 @@ CREATE TABLE [dw].[DmBarnd](
 )WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dw].[DmSite]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  Table [dw].[DmSite]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -38,7 +56,7 @@ CREATE TABLE [dw].[DmSite](
 )WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dw].[DmSiteFeatures]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  Table [dw].[DmSiteFeatures]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -54,7 +72,7 @@ CREATE TABLE [dw].[DmSiteFeatures](
 	[Other_Features] [nvarchar](max) NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dw].[Fact_FuelPrice]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  Table [dw].[Fact_FuelPrice]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -74,7 +92,7 @@ CREATE TABLE [dw].[Fact_FuelPrice](
 )WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [tempstage].[FuelPrices]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  Table [tempstage].[FuelPrices]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -96,7 +114,7 @@ CREATE TABLE [tempstage].[FuelPrices](
 GO
 ALTER TABLE [dw].[Fact_FuelPrice] ADD  DEFAULT (getdate()) FOR [DateCreated]
 GO
-/****** Object:  StoredProcedure [dw].[SP_Populate_DIM_SiteFeatures]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  StoredProcedure [dw].[SP_Populate_DIM_SiteFeatures]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -112,86 +130,100 @@ BEGIN
     -- SET NOCOUNT ON added to prevent extra result sets from
     -- interfering with SELECT statements.
     SET NOCOUNT ON
-	
-	DECLARE @t TABLE
-    (
-      [tradingname] VARCHAR(MAX) ,
-      sitefeatures VARCHAR(MAX)
-    )
-	
-	INSERT  INTO @t 
-	SELECT [tradingname], [sitefeatures] FROM   [tempstage].[FuelPrices] 
-
-	;WITH    cte
-			  AS ( SELECT   [tradingname] ,
-							Split.a.value('.', 'VARCHAR(100)') AS ItemTag ,
-							ROW_NUMBER() OVER ( PARTITION BY  [tradingname] ORDER BY ( SELECT
-																  NULL
-																  ) ) rn
-				   FROM     ( SELECT    [tradingname] ,
-										CAST ('<M>' + REPLACE(sitefeatures, ',',
-															  '</M><M>') + '</M>' AS XML) AS ItemTag
-							  FROM      @t
-							) AS A
-							CROSS APPLY ItemTag.nodes('/M') AS Split ( a )
-				 )
-
-	SELECT 
-		*
-		,CASE WHEN LTRIM(A.ItemTag) like  'Open%' THEN 'Trading_period'
-			WHEN ( LTRIM(A.ItemTag) like 'Sat%'  OR LTRIM(A.ItemTag) like 'Sun%' OR LTRIM(A.ItemTag) like 'Mon%' OR LTRIM(A.ItemTag) like 'Tue%' OR LTRIM(A.ItemTag) like 'Wed%' OR LTRIM(A.ItemTag) like 'Thu%' OR  LTRIM(A.ItemTag) like 'Fri%' ) 
-				  THEN 'Trading_period'	 
-			WHEN LTRIM(A.ItemTag) like '%ATM' THEN  'Paymethod' 
-			WHEN LTRIM(A.ItemTag) like '%EFTPOS' THEN  'Paymethod' 
-			WHEN LTRIM(A.ItemTag) like  '%Driveway%' THEN 'Driveway_Services'
-			WHEN LTRIM(A.ItemTag) like  '%Station%'  THEN 'Station'
-			ELSE 'Other_Features'
-		END AS [identifier]
-	INTO #Temp_Table
-	FROM cte AS A
+	BEGIN TRY
+			DECLARE @t TABLE
+			(
+			  [tradingname] VARCHAR(MAX) ,
+			  sitefeatures VARCHAR(MAX)
+			)
 
 
-	SELECT 
-		[tradingname]
-		, STRING_AGG(ItemTag, ', ') AS [item_Tag_]
-	INTO #Temp_Table_SiteFeatures
-	FROM #Temp_Table A
-	WHERE ItemTag <> ''
-	GROUP BY [tradingname],identifier
-	ORDER BY [tradingname]
+			INSERT  INTO @t 
+			SELECT [tradingname], [sitefeatures] FROM   [tempstage].[FuelPrices] 
 
-	SELECT * 
-	,CASE WHEN LTRIM(A.item_Tag_) like  'Open%' THEN 'Trading_period' 
-		WHEN LTRIM(A.item_Tag_) like 'ATM%' THEN  'ATM_Avaialble' 
-		WHEN LTRIM(A.item_Tag_) like '%EFTPOS%' THEN  'Paymethod' 
-		WHEN LTRIM(A.item_Tag_) like  '%Driveway%' THEN 'Driveway_Services'
-		WHEN LTRIM(A.item_Tag_) like  '%Station%'  THEN 'Station'
-		ELSE 'Other_Features'
-	END AS [identifier]
-	INTO #TEMP_Consolidated_SiteFeatures
-	FROM #Temp_Table_SiteFeatures A
-	ORDER BY [tradingname]
+			;WITH    cte
+					  AS ( SELECT   [tradingname] ,
+									Split.a.value('.', 'VARCHAR(100)') AS ItemTag ,
+									ROW_NUMBER() OVER ( PARTITION BY  [tradingname] ORDER BY ( SELECT
+																		  NULL
+																		  ) ) rn
+						   FROM     ( SELECT    [tradingname] ,
+												CAST ('<M>' + REPLACE(sitefeatures, ',',
+																	  '</M><M>') + '</M>' AS XML) AS ItemTag
+									  FROM      @t
+									) AS A
+									CROSS APPLY ItemTag.nodes('/M') AS Split ( a )
+						 )
 
-	TRUNCATE TABLE [dw].[DmSiteFeatures]
+			SELECT 
+				*
+				,CASE WHEN LTRIM(A.ItemTag) like  'Open%' THEN 'Trading_period'
+					WHEN ( LTRIM(A.ItemTag) like 'Sat%'  OR LTRIM(A.ItemTag) like 'Sun%' OR LTRIM(A.ItemTag) like 'Mon%' OR LTRIM(A.ItemTag) like 'Tue%' OR LTRIM(A.ItemTag) like 'Wed%' OR LTRIM(A.ItemTag) like 'Thu%' OR  LTRIM(A.ItemTag) like 'Fri%' ) 
+						  THEN 'Trading_period'	 
+					WHEN LTRIM(A.ItemTag) like '%ATM' THEN  'Paymethod' 
+					WHEN LTRIM(A.ItemTag) like '%EFTPOS' THEN  'Paymethod' 
+					WHEN LTRIM(A.ItemTag) like  '%Driveway%' THEN 'Driveway_Services'
+					WHEN LTRIM(A.ItemTag) like  '%Station%'  THEN 'Station'
+					ELSE 'Other_Features'
+				END AS [identifier]
+			INTO #Temp_Table
+			FROM cte AS A
 
-	INSERT INTO [dw].[DmSiteFeatures]  ([SiteID] ,[Trading_period],[ATM_Avaialble] ,[Paymethod] ,[Driveway_Services] ,[Station] ,[Other_Features]  )
-		SELECT 
-			(SELECT top 1 [SiteID] FROM [dw].[DmSite] WHERE TradingName = tradingname) AS SiteID
-			, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Trading_period' ) AS [Trading_period]
-			, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='ATM_Avaialble'  ) AS ATM_Avaialble
-			, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Paymethod' ) AS Paymethod
-			, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Driveway_Services') AS [Driveway_Services]
-			, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Station' ) AS Station
-			, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Other_Features') AS Other_Features
-	FROM [tempstage].[FuelPrices] S 
 
-	DROP TABLE #Temp_Table
-	DROP TABLE #Temp_Table_SiteFeatures
-	DROP TABLE #TEMP_Consolidated_SiteFeatures
+			SELECT 
+				[tradingname]
+				, STRING_AGG(ItemTag, ', ') AS [item_Tag_]
+			INTO #Temp_Table_SiteFeatures
+			FROM #Temp_Table A
+			WHERE ItemTag <> ''
+			GROUP BY [tradingname],identifier
+			ORDER BY [tradingname]
+
+			SELECT * 
+			,CASE WHEN LTRIM(A.item_Tag_) like  'Open%' THEN 'Trading_period' 
+				WHEN LTRIM(A.item_Tag_) like 'ATM%' THEN  'ATM_Avaialble' 
+				WHEN LTRIM(A.item_Tag_) like '%EFTPOS%' THEN  'Paymethod' 
+				WHEN LTRIM(A.item_Tag_) like  '%Driveway%' THEN 'Driveway_Services'
+				WHEN LTRIM(A.item_Tag_) like  '%Station%'  THEN 'Station'
+				ELSE 'Other_Features'
+			END AS [identifier]
+			INTO #TEMP_Consolidated_SiteFeatures
+			FROM #Temp_Table_SiteFeatures A
+			ORDER BY [tradingname]
+
+			TRUNCATE TABLE [dw].[DmSiteFeatures]
+
+			INSERT INTO [dw].[DmSiteFeatures]  ([SiteID] ,[Trading_period],[ATM_Avaialble] ,[Paymethod] ,[Driveway_Services] ,[Station] ,[Other_Features]  )
+				SELECT 
+					(SELECT top 1 [SiteID] FROM [dw].[DmSite] WHERE TradingName = tradingname) AS SiteID
+					, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Trading_period' ) AS [Trading_period]
+					, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='ATM_Avaialble'  ) AS ATM_Avaialble
+					, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Paymethod' ) AS Paymethod
+					, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Driveway_Services') AS [Driveway_Services]
+					, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Station' ) AS Station
+					, (SELECT SF.item_Tag_ FROM #TEMP_Consolidated_SiteFeatures SF WHERE SF.tradingname  = S.tradingname AND SF.identifier ='Other_Features') AS Other_Features
+			FROM [tempstage].[FuelPrices] S 
+
+			DROP TABLE #Temp_Table
+			DROP TABLE #Temp_Table_SiteFeatures
+			DROP TABLE #TEMP_Consolidated_SiteFeatures
+	END TRY
+	BEGIN CATCH
+	   INSERT INTO  dbo.DW_Ingestion_Errors VALUES
+			  (	SUSER_SNAME(),
+			    '[dw].[DmSiteFeatures]',
+				ERROR_NUMBER(),
+				ERROR_STATE(),
+				ERROR_SEVERITY(),
+				ERROR_LINE(),
+				ERROR_PROCEDURE(),
+				ERROR_MESSAGE(),
+				GETDATE());
+	END CATCH;   
 
 END
 GO
-/****** Object:  StoredProcedure [dw].[SP_Populate_DIM_Tables]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  StoredProcedure [dw].[SP_Populate_DIM_Tables]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -207,20 +239,34 @@ BEGIN
     -- SET NOCOUNT ON added to prevent extra result sets from
     -- interfering with SELECT statements.
     SET NOCOUNT ON
-	
-	--populating dimension table
-	TRUNCATE TABLE  [dw].[DmBarnd] 
-	INSERT INTO [dw].[DmBarnd] (BrandName)  
-	SELECT brand FROM [tempstage].[FuelPrices]
+	BEGIN TRY
+		--populating dimension table
+		TRUNCATE TABLE  [dw].[DmBarnd] 
+		INSERT INTO [dw].[DmBarnd] (BrandName)  
+		SELECT brand FROM [tempstage].[FuelPrices]
 
-	TRUNCATE TABLE [dw].[DmSite]
-	INSERT INTO [dw].[DmSite] (TradingName ,[Location] ,[Address] ,[Phone]  ,[Latitude], [Longitude] )
-	SELECT tradingname, location, address, phone, latitude, longitude FROM [tempstage].[FuelPrices]
+		TRUNCATE TABLE [dw].[DmSite]
+		INSERT INTO [dw].[DmSite] (TradingName ,[Location] ,[Address] ,[Phone]  ,[Latitude], [Longitude] )
+		SELECT tradingname, location, address, phone, latitude, longitude FROM [tempstage].[FuelPrices]
+
+	END TRY
+	BEGIN CATCH
+	   INSERT INTO  dbo.DW_Ingestion_Errors VALUES
+			  (	SUSER_SNAME(),
+			    '[dw].[SP_Populate_DIM_Tables]',
+				ERROR_NUMBER(),
+				ERROR_STATE(),
+				ERROR_SEVERITY(),
+				ERROR_LINE(),
+				ERROR_PROCEDURE(),
+				ERROR_MESSAGE(),
+				GETDATE());
+	END CATCH;  
 
 END
 GO
 
-/****** Object:  StoredProcedure [dw].[SP_Populate_FACT]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  StoredProcedure [dw].[SP_Populate_FACT]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -236,21 +282,37 @@ BEGIN
     -- SET NOCOUNT ON added to prevent extra result sets from
     -- interfering with SELECT statements.
     SET NOCOUNT ON
-    TRUNCATE TABLE [dw].[Fact_FuelPrice]
 
-	INSERT INTO [dw].[Fact_FuelPrice] (BrandID ,SiteID ,DateID ,Price , DateModified)
-	SELECT 
-		(SELECT top 1 BrandId FROM [dw].[DmBarnd] WHERE brandName = brand) AS [BrandID]
-		,(SELECT top 1 SiteID FROM [dw].[DmSite] WHERE TradingName = tradingname) AS SiteID
-		,( YEAR([date])*100 + MONTH([date])  ) *100 + DAY([date]) AS DateId
-		, price
-		, NULL as DateModified
-	FROM  [tempstage].[FuelPrices]
+	BEGIN TRY
 
+		TRUNCATE TABLE [dw].[Fact_FuelPrice]
+
+		INSERT INTO [dw].[Fact_FuelPrice] (BrandID ,SiteID ,DateID ,Price , DateModified)
+		SELECT 
+			(SELECT top 1 BrandId FROM [dw].[DmBarnd] WHERE brandName = brand) AS [BrandID]
+			,(SELECT top 1 SiteID FROM [dw].[DmSite] WHERE TradingName = tradingname) AS SiteID
+			,( YEAR([date])*100 + MONTH([date])  ) *100 + DAY([date]) AS DateId
+			,price
+			, NULL as DateModified
+		FROM  [tempstage].[FuelPrices]
+		
+	END TRY
+	BEGIN CATCH
+	   INSERT INTO  dbo.DW_Ingestion_Errors VALUES
+			  (	SUSER_SNAME(),
+			    '[dw].[Fact_FuelPrice]',
+				ERROR_NUMBER(),
+				ERROR_STATE(),
+				ERROR_SEVERITY(),
+				ERROR_LINE(),
+				ERROR_PROCEDURE(),
+				ERROR_MESSAGE(),
+				GETDATE());
+	END CATCH;   
 
 END
 GO
-/****** Object:  StoredProcedure [dw].[SP_Populate_DW_Warehouse]    Script Date: 22/01/2022 11:32:54 PM ******/
+/****** Object:  StoredProcedure [dw].[SP_Populate_DW_Warehouse]    Script Date: 23/01/2022 11:47:23 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -266,13 +328,25 @@ BEGIN
     -- SET NOCOUNT ON added to prevent extra result sets from
     -- interfering with SELECT statements.
     SET NOCOUNT ON
-	
-	--Populating DIM Tables
-	EXEC [dw].[SP_Populate_DIM_Tables]
-	EXEC [dw].[SP_Populate_DIM_SiteFeatures]
+	BEGIN TRY	
+		--Populating DIM Tables
+		EXEC [dw].[SP_Populate_DIM_Tables]
+		EXEC [dw].[SP_Populate_DIM_SiteFeatures]
 
-	--Populating FACT Table
-	EXEC [dw].[SP_Populate_FACT]
-
+		--Populating FACT Table
+		EXEC [dw].[SP_Populate_FACT]
+	END TRY
+	BEGIN CATCH
+	   INSERT INTO  dbo.DW_Ingestion_Errors VALUES
+			  (	SUSER_SNAME(),
+			    '[dw].[SP_Populate_DW_Warehouse]',
+				ERROR_NUMBER(),
+				ERROR_STATE(),
+				ERROR_SEVERITY(),
+				ERROR_LINE(),
+				ERROR_PROCEDURE(),
+				ERROR_MESSAGE(),
+				GETDATE());
+	END CATCH;  
 END
 GO
