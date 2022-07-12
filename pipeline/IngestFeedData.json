@@ -4,7 +4,7 @@
 		"description": "This pipeline ingests Fuel XML data to Data lake Storage",
 		"activities": [
 			{
-				"name": "CopyFeedData_copy1",
+				"name": "CopyFeedData",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -14,7 +14,12 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Destination",
+						"value": "datalakestore/Raw/"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "XmlSource",
