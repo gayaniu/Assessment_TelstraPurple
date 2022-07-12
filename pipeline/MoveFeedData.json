@@ -46,13 +46,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Xml1",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "Json2",
+						"referenceName": "FuelDataRaw",
 						"type": "DatasetReference"
 					}
 				]
