@@ -13,7 +13,12 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Destination",
+						"value": "datalakestore/Raw/test"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "XmlSource",
@@ -46,7 +51,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "FeedJson",
+						"referenceName": "FeedJsonData",
 						"type": "DatasetReference"
 					}
 				]
