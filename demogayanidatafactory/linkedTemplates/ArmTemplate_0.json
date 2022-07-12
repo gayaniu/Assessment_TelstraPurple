@@ -248,6 +248,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/FeedJson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage_telstrapurpledatastore",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Raw",
+						"fileSystem": "datalakestore"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_telstrapurpledatastore')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MoveFeedData')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -407,14 +431,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/IngestFeedData')]",
+			"name": "[concat(parameters('factoryName'), '/IngestRRSFeed')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "This pipeline ingests Fuel XML data to Data lake Storage",
 				"activities": [
 					{
-						"name": "CopyFeedData",
+						"name": "CopyRRSData",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -424,12 +447,7 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [
-							{
-								"name": "Destination",
-								"value": "datalakestore/Raw/"
-							}
-						],
+						"userProperties": [],
 						"typeProperties": {
 							"source": {
 								"type": "XmlSource",
@@ -444,12 +462,12 @@
 								}
 							},
 							"sink": {
-								"type": "ParquetSink",
+								"type": "JsonSink",
 								"storeSettings": {
 									"type": "AzureBlobFSWriteSettings"
 								},
 								"formatSettings": {
-									"type": "ParquetWriteSettings"
+									"type": "JsonWriteSettings"
 								}
 							},
 							"enableStaging": false
@@ -463,7 +481,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "Feed",
+								"referenceName": "FeedJson",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -478,7 +496,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/FuelDataRaw')]",
-				"[concat(variables('factoryId'), '/datasets/Feed')]"
+				"[concat(variables('factoryId'), '/datasets/FeedJson')]"
 			]
 		}
 	]
