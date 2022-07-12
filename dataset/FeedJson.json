@@ -1,0 +1,17 @@
+{
+	"name": "FeedJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RSSFeedLinkService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation"
+			}
+		},
+		"schema": {}
+	}
+}

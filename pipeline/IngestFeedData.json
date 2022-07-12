@@ -4,7 +4,7 @@
 		"description": "This pipeline ingests Fuel XML data to Data lake Storage",
 		"activities": [
 			{
-				"name": "CopyFeedData",
+				"name": "CopyFeedData_copy1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -14,12 +14,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "Destination",
-						"value": "datalakestore/Raw/"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "XmlSource",
@@ -34,12 +29,12 @@
 						}
 					},
 					"sink": {
-						"type": "ParquetSink",
+						"type": "JsonSink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
-							"type": "ParquetWriteSettings"
+							"type": "JsonWriteSettings"
 						}
 					},
 					"enableStaging": false
@@ -52,7 +47,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Feed",
+						"referenceName": "FeedJson",
 						"type": "DatasetReference"
 					}
 				]
