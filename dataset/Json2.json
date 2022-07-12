@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "Feed_data.json",
+				"fileName": "feeddata.json",
 				"folderPath": "Raw",
 				"fileSystem": "datalakestore"
 			}
