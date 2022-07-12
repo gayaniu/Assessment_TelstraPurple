@@ -1,0 +1,13 @@
+{
+	"name": "GetRSSFeed",
+	"properties": {
+		"description": "Get the Fuel RSS feed",
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
