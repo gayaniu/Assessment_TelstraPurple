@@ -1,5 +1,5 @@
 {
-	"name": "Xml1",
+	"name": "FuelDataRaw",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "fuelWatchRSS",

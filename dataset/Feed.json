@@ -1,0 +1,37 @@
+{
+	"name": "Feed",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RSSFeedLinkService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Raw",
+				"fileSystem": "landing"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "SNo",
+				"type": "INT32"
+			},
+			{
+				"name": "ObservationDate",
+				"type": "UTF8"
+			},
+			{
+				"name": "Confirmed",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Deaths",
+				"type": "DOUBLE"
+			}
+		]
+	}
+}

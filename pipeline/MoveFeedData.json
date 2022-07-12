@@ -46,7 +46,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Xml1",
+						"referenceName": "FuelDataRaw",
 						"type": "DatasetReference"
 					}
 				],
