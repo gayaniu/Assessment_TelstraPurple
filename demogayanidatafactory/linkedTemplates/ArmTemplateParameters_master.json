@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "demogayanidatafactory"
+		},
+		"AzureDataLakeStorage_telstrapurpledatastore_accountKey": {
+			"value": ""
+		},
+		"DestinationServer_connectionString": {
+			"value": ""
+		},
+		"RunDataBricksTransformation_accessToken": {
+			"value": ""
+		},
+		"RSSFeedLinkService_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url": {
+			"value": "https://telstrapurpledatastore.dfs.core.windows.net"
+		},
+		"SSMS_Secrets_properties_typeProperties_baseUrl": {
+			"value": "https://gayaniKeyvault.vault.azure.net/"
+		},
+		"fuelWatchRSS_properties_typeProperties_url": {
+			"value": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
+		},
+		"RSSFeedLinkService_properties_typeProperties_url": {
+			"value": "https://telstrapurpledatastore.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
