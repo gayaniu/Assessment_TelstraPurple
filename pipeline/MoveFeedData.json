@@ -49,12 +49,6 @@
 						"referenceName": "FuelDataRaw",
 						"type": "DatasetReference"
 					}
-				],
-				"outputs": [
-					{
-						"referenceName": "FeedJsonData",
-						"type": "DatasetReference"
-					}
 				]
 			},
 			{
