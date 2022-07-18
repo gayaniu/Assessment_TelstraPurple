@@ -27,6 +27,14 @@
 			"type": "string",
 			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net"
 		},
+		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
+		},
+		"MovieRatings_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://drive.google.com/file/d/1P70BRvmWyXbsjHe0QEIWpgrm5h7LnEqx/view?usp=sharing"
+		},
 		"RSSFeedLinkService_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net/"
@@ -36,14 +44,6 @@
 			"defaultValue": "https://gayaniKeyvault.vault.azure.net/"
 		},
 		"fuelWatchRSS_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
-		},
-		"MovieRatings_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://drive.google.com/file/d/1P70BRvmWyXbsjHe0QEIWpgrm5h7LnEqx/view?usp=sharing"
-		},
-		"HttpServer1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
 		},
@@ -89,6 +89,12 @@
 					"AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url')]"
 					},
+					"HttpServer1_properties_typeProperties_url": {
+						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
+					},
+					"MovieRatings_properties_typeProperties_url": {
+						"value": "[parameters('MovieRatings_properties_typeProperties_url')]"
+					},
 					"RSSFeedLinkService_properties_typeProperties_url": {
 						"value": "[parameters('RSSFeedLinkService_properties_typeProperties_url')]"
 					},
@@ -97,12 +103,6 @@
 					},
 					"fuelWatchRSS_properties_typeProperties_url": {
 						"value": "[parameters('fuelWatchRSS_properties_typeProperties_url')]"
-					},
-					"MovieRatings_properties_typeProperties_url": {
-						"value": "[parameters('MovieRatings_properties_typeProperties_url')]"
-					},
-					"HttpServer1_properties_typeProperties_url": {
-						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
 					}
 				}
 			},

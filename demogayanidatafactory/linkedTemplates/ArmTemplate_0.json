@@ -27,6 +27,14 @@
 			"type": "string",
 			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net"
 		},
+		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
+		},
+		"MovieRatings_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://drive.google.com/file/d/1P70BRvmWyXbsjHe0QEIWpgrm5h7LnEqx/view?usp=sharing"
+		},
 		"RSSFeedLinkService_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net/"
@@ -36,14 +44,6 @@
 			"defaultValue": "https://gayaniKeyvault.vault.azure.net/"
 		},
 		"fuelWatchRSS_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
-		},
-		"MovieRatings_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://drive.google.com/file/d/1P70BRvmWyXbsjHe0QEIWpgrm5h7LnEqx/view?usp=sharing"
-		},
-		"HttpServer1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
 		}
@@ -65,6 +65,37 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureDataLakeStorage_telstrapurpledatastore_accountKey')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpServer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpServer1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieRatings')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This linked service will access the Kaggle Movie  rating dataset",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('MovieRatings_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -140,37 +171,6 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MovieRatings')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "This linked service will access the Kaggle Movie  rating dataset",
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('MovieRatings_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/HttpServer1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('HttpServer1_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
 			},
 			"dependsOn": []
 		},
@@ -317,27 +317,31 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DestinationServer')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/FuelFeedJsonData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Destination server Data model-Datawarehouse",
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage_telstrapurpledatastore",
+					"type": "LinkedServiceReference"
+				},
 				"annotations": [],
-				"type": "AzureSqlDatabase",
+				"type": "Json",
 				"typeProperties": {
-					"connectionString": "[parameters('DestinationServer_connectionString')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "SSMS_Secrets",
-							"type": "LinkedServiceReference"
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat('RRSFeeddata_' , substring(convertFromUtc(utcnow() , 'Australian Central Standard Time'),0,10), '.json') ",
+							"type": "Expression"
 						},
-						"secretName": "ssmsloginpassword"
+						"folderPath": "Raw",
+						"fileSystem": "landing"
 					}
-				}
+				},
+				"schema": {}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SSMS_Secrets')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_telstrapurpledatastore')]"
 			]
 		},
 		{
@@ -362,31 +366,96 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FuelFeedJsonData')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/DestinationServer')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage_telstrapurpledatastore",
-					"type": "LinkedServiceReference"
-				},
+				"description": "Destination server Data model-Datawarehouse",
 				"annotations": [],
-				"type": "Json",
+				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@concat('RRSFeeddata_' , substring(convertFromUtc(utcnow() , 'Australian Eastern Standard Time'),0,10), '.json') ",
-							"type": "Expression"
+					"connectionString": "[parameters('DestinationServer_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "SSMS_Secrets",
+							"type": "LinkedServiceReference"
 						},
-						"folderPath": "Raw",
-						"fileSystem": "landing"
+						"secretName": "ssmsloginpassword"
 					}
-				},
-				"schema": {}
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_telstrapurpledatastore')]"
+				"[concat(variables('factoryId'), '/linkedServices/SSMS_Secrets')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IngestFuelData')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyFuelData",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "XmlSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "XmlReadSettings",
+									"validationMode": "none",
+									"namespaces": true
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "FuelFeedRRS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "FuelFeedJsonData",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/FuelFeedRRS')]",
+				"[concat(variables('factoryId'), '/datasets/FuelFeedJsonData')]"
 			]
 		},
 		{
@@ -620,75 +689,6 @@
 				"[concat(variables('factoryId'), '/datasets/FeedJsonData')]",
 				"[concat(variables('factoryId'), '/linkedServices/RunDataBricksTransformation')]",
 				"[concat(variables('factoryId'), '/linkedServices/DestinationServer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/IngestFuelData')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "CopyFuelData",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "XmlSource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "XmlReadSettings",
-									"validationMode": "none",
-									"namespaces": true
-								}
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "FuelFeedRRS",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "FuelFeedJsonData",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/FuelFeedRRS')]",
-				"[concat(variables('factoryId'), '/datasets/FuelFeedJsonData')]"
 			]
 		}
 	]
