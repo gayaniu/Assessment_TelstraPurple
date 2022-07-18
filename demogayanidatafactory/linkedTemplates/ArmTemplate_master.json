@@ -15,17 +15,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'DestinationServer'"
 		},
-		"RunDataBricksTransformation_accessToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accessToken' of 'RunDataBricksTransformation'"
-		},
 		"RSSFeedLinkService_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'RSSFeedLinkService'"
 		},
+		"RunDataBricksTransformation_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'RunDataBricksTransformation'"
+		},
 		"AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net"
+		},
+		"RSSFeedLinkService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net/"
 		},
 		"SSMS_Secrets_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -35,9 +39,13 @@
 			"type": "string",
 			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
 		},
-		"RSSFeedLinkService_properties_typeProperties_url": {
+		"MovieRatings_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net/"
+			"defaultValue": "https://drive.google.com/file/d/1P70BRvmWyXbsjHe0QEIWpgrm5h7LnEqx/view?usp=sharing"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
 		},
 		"containerUri": {
 			"type": "string",
@@ -69,11 +77,11 @@
 					"AzureDataLakeStorage_telstrapurpledatastore_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage_telstrapurpledatastore_accountKey')]"
 					},
-					"RunDataBricksTransformation_accessToken": {
-						"value": "[parameters('RunDataBricksTransformation_accessToken')]"
-					},
 					"RSSFeedLinkService_accountKey": {
 						"value": "[parameters('RSSFeedLinkService_accountKey')]"
+					},
+					"RunDataBricksTransformation_accessToken": {
+						"value": "[parameters('RunDataBricksTransformation_accessToken')]"
 					},
 					"DestinationServer_connectionString": {
 						"value": "[parameters('DestinationServer_connectionString')]"
@@ -81,14 +89,20 @@
 					"AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url')]"
 					},
+					"RSSFeedLinkService_properties_typeProperties_url": {
+						"value": "[parameters('RSSFeedLinkService_properties_typeProperties_url')]"
+					},
 					"SSMS_Secrets_properties_typeProperties_baseUrl": {
 						"value": "[parameters('SSMS_Secrets_properties_typeProperties_baseUrl')]"
 					},
 					"fuelWatchRSS_properties_typeProperties_url": {
 						"value": "[parameters('fuelWatchRSS_properties_typeProperties_url')]"
 					},
-					"RSSFeedLinkService_properties_typeProperties_url": {
-						"value": "[parameters('RSSFeedLinkService_properties_typeProperties_url')]"
+					"MovieRatings_properties_typeProperties_url": {
+						"value": "[parameters('MovieRatings_properties_typeProperties_url')]"
+					},
+					"HttpServer1_properties_typeProperties_url": {
+						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
 					}
 				}
 			},

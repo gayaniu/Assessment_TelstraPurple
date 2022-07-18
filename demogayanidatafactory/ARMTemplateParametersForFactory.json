@@ -11,14 +11,17 @@
 		"DestinationServer_connectionString": {
 			"value": ""
 		},
-		"RunDataBricksTransformation_accessToken": {
+		"RSSFeedLinkService_accountKey": {
 			"value": ""
 		},
-		"RSSFeedLinkService_accountKey": {
+		"RunDataBricksTransformation_accessToken": {
 			"value": ""
 		},
 		"AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url": {
 			"value": "https://telstrapurpledatastore.dfs.core.windows.net"
+		},
+		"RSSFeedLinkService_properties_typeProperties_url": {
+			"value": "https://telstrapurpledatastore.dfs.core.windows.net/"
 		},
 		"SSMS_Secrets_properties_typeProperties_baseUrl": {
 			"value": "https://gayaniKeyvault.vault.azure.net/"
@@ -26,8 +29,11 @@
 		"fuelWatchRSS_properties_typeProperties_url": {
 			"value": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
 		},
-		"RSSFeedLinkService_properties_typeProperties_url": {
-			"value": "https://telstrapurpledatastore.dfs.core.windows.net/"
+		"MovieRatings_properties_typeProperties_url": {
+			"value": "https://drive.google.com/file/d/1P70BRvmWyXbsjHe0QEIWpgrm5h7LnEqx/view?usp=sharing"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"value": "https://www.fuelwatch.wa.gov.au/fuelwatch/fuelWatchRSS"
 		}
 	}
 }
