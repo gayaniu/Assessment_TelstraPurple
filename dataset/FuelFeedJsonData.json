@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "RRSFeed.json",
 				"folderPath": "Raw",
 				"fileSystem": "landing"
 			}
