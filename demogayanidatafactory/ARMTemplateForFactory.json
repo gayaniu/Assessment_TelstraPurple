@@ -511,7 +511,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@concat('RRSFeeddata_' , substring(convertFromUtc(utcnow() , 'Eastern Standard Time'),0,10), '.json') ",
+							"value": "@concat('RRSFeeddata_' , utcnow() ,  '.json') ",
 							"type": "Expression"
 						},
 						"folderPath": "Raw",
