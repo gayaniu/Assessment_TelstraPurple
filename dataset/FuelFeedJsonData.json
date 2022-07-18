@@ -10,7 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "RRSFeed.json",
+				"fileName": {
+					"value": "@concat('RRSFeeddata_' , utcnow(), '.json')",
+					"type": "Expression"
+				},
 				"folderPath": "Raw",
 				"fileSystem": "landing"
 			}
