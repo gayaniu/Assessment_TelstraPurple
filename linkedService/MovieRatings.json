@@ -5,7 +5,7 @@
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset?select=ratings.csv",
+			"url": "https://drive.google.com/file/d/1P70BRvmWyXbsjHe0QEIWpgrm5h7LnEqx/view?usp=sharing",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
