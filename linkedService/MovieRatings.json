@@ -1,0 +1,13 @@
+{
+	"name": "MovieRatings",
+	"properties": {
+		"description": "This linked service will access the Kaggle Movie  rating dataset",
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset?select=ratings.csv",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
