@@ -1,0 +1,19 @@
+{
+	"name": "FuelFeedJsonData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage_telstrapurpledatastore",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Raw",
+				"fileSystem": "landing"
+			}
+		},
+		"schema": {}
+	}
+}
