@@ -1,0 +1,53 @@
+{
+	"name": "SalesDataMap",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "csvService",
+						"type": "DatasetReference"
+					},
+					"name": "DiscuntData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSQLSInk",
+						"type": "DatasetReference"
+					},
+					"name": "SinktoDB"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          id as short,",
+				"          address as string,",
+				"          name as string,",
+				"          city as string,",
+				"          country as string,",
+				"          number as string,",
+				"          uniqueidentifier as string,",
+				"          timestamp as string,",
+				"          new as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: true,",
+				"     ignoreNoFilesFound: false) ~> DiscuntData",
+				"DiscuntData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SinktoDB"
+			]
+		}
+	}
+}
