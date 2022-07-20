@@ -17,6 +17,9 @@
 		"RunDataBricksTransformation_accessToken": {
 			"value": ""
 		},
+		"StorageLinkedBlob_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url": {
 			"value": "https://telstrapurpledatastore.dfs.core.windows.net"
 		},

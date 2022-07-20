@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'RunDataBricksTransformation'"
 		},
+		"StorageLinkedBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'StorageLinkedBlob'"
+		},
 		"AzureDataLakeStorage_telstrapurpledatastore_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://telstrapurpledatastore.dfs.core.windows.net"
@@ -83,6 +87,9 @@
 					"RunDataBricksTransformation_accessToken": {
 						"value": "[parameters('RunDataBricksTransformation_accessToken')]"
 					},
+					"StorageLinkedBlob_connectionString": {
+						"value": "[parameters('StorageLinkedBlob_connectionString')]"
+					},
 					"DestinationServer_connectionString": {
 						"value": "[parameters('DestinationServer_connectionString')]"
 					},
@@ -107,6 +114,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "demogayanidatafactory_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'demogayanidatafactory_ArmTemplate_0')]"
+			]
 		}
 	]
 }
