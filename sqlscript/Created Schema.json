@@ -1,0 +1,17 @@
+{
+	"name": "Created Schema",
+	"properties": {
+		"content": {
+			"query": "CREATE SCHEMA [tempstage]\n\n--select * from [tempstage].[SalesAddress]--",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "mydedicatedsqlpool",
+				"poolName": "mydedicatedsqlpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

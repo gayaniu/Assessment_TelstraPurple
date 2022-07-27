@@ -1,0 +1,17 @@
+{
+	"name": "Created tempstage Sales Table",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE  [tempstage].[SalesAddress]\n(\n    id int NOT NULL,\n    addresline1 varchar(100)\n    ,addressline2 varchar(100)\n    ,city varchar(100)\n    ,[State] varchar(100)\n    ,Country varchar(100)\n    , uniqueid varchar(200)\n    , [CreatedTime] varchar(100)\n)\nWITH\n(\n    DISTRIBUTION = HASH (id),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "mydedicatedsqlpool",
+				"poolName": "mydedicatedsqlpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
