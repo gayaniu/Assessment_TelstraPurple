@@ -1,0 +1,50 @@
+{
+	"name": "SqlPoolTable1",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "addresline1",
+				"type": "varchar"
+			},
+			{
+				"name": "addressline2",
+				"type": "varchar"
+			},
+			{
+				"name": "city",
+				"type": "varchar"
+			},
+			{
+				"name": "State",
+				"type": "varchar"
+			},
+			{
+				"name": "Country",
+				"type": "varchar"
+			},
+			{
+				"name": "uniqueid",
+				"type": "varchar"
+			},
+			{
+				"name": "CreatedTime",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "tempstage",
+			"table": "SalesAddress"
+		},
+		"sqlPool": {
+			"referenceName": "mydedicatedsqlpool",
+			"type": "SqlPoolReference"
+		}
+	}
+}
