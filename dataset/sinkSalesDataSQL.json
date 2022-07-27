@@ -1,0 +1,60 @@
+{
+	"name": "sinkSalesDataSQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "StagingCopy",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AddressLine1",
+				"type": "varchar"
+			},
+			{
+				"name": "AddressLine2",
+				"type": "varchar"
+			},
+			{
+				"name": "State",
+				"type": "varchar"
+			},
+			{
+				"name": "Country",
+				"type": "varchar"
+			},
+			{
+				"name": "Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "uniqueId",
+				"type": "varchar"
+			},
+			{
+				"name": "Datetimestamp",
+				"type": "varchar"
+			},
+			{
+				"name": "ingestedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "pipelineName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "tempstage",
+			"table": "SlaesAddresses_temp"
+		}
+	}
+}
