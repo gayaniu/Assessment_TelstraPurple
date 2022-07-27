@@ -1,0 +1,114 @@
+{
+	"name": "TestSQLConnection",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SPDev",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "6f439ff8-f0c0-4425-90b9-b11fb17b5aa3"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/7a8899ae-7773-4e18-93cd-88fd1151ca02/resourceGroups/spark_certification/providers/Microsoft.Synapse/workspaces/gayanisynapseservice/bigDataPools/SPDev",
+				"name": "SPDev",
+				"type": "Spark",
+				"endpoint": "https://gayanisynapseservice.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SPDev",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"from notebookutils import mssparkutils\r\n",
+					"\r\n",
+					"jdbcHostname = \"gayanissms.database.windows.net\"\r\n",
+					"jdbcDatabase = \"DataMart\"\r\n",
+					"jdbcPort = \"1433\"\r\n",
+					"username =  mssparkutils.credentials.getSecret('gayaniKeyvault','ssmsloginusername') #\"gayani\"\r\n",
+					"password = mssparkutils.credentials.getSecret('gayaniKeyvault','ssmsloginpassword')#\"1qaz2wsx!@QWAS\"\r\n",
+					"print(username)\r\n",
+					"print(password)\r\n",
+					"\r\n",
+					"\r\n",
+					"jdbcUrl = \"jdbc:sqlserver://{0}:{1};database={2}\".format(jdbcHostname, jdbcPort, jdbcDatabase)\r\n",
+					"connectionProperties = {\r\n",
+					"   \"user\" : username,\r\n",
+					"   \"password\" : password,\r\n",
+					"   \"driver\" : \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\r\n",
+					" }\r\n",
+					"print(connectionProperties)\r\n",
+					"from pyspark.sql import *\r\n",
+					"import pandas as pd\r\n",
+					"#reading a parquet file to a dataframe\r\n",
+					"#parDF=spark.read.parquet(\"abfss://datalakestore@telstrapurpledatastore.dfs.core.windows.net/Raw/FuelWatch/feed.parquet\")\r\n",
+					"#parDF.show()\r\n",
+					"\r\n",
+					"pushdown_query = \"(Select * from tempstage.FuelPrices) as cust\"\r\n",
+					"df = spark.read.jdbc(url=jdbcUrl, table=pushdown_query, properties=connectionProperties)\r\n",
+					"display(df)\r\n",
+					"#myfinaldf = DataFrameWriter(parDF)\r\n",
+					"#Writing data to the Azure SQL Datawarehouse, tempory table\r\n",
+					"#myfinaldf.jdbc(url=jdbcUrl, table= \"tempstage.FuelPrices\", mode =\"overwrite\", properties = connectionProperties)"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from notebookutils import mssparkutils\r\n",
+					"#mssparkutils.credentials.help()\r\n",
+					"\r\n",
+					"test = mssparkutils.credentials.getSecret('gayaniKeyvault','ssmsloginusername')\r\n",
+					"print(test)"
+				],
+				"execution_count": 5
+			}
+		]
+	}
+}
