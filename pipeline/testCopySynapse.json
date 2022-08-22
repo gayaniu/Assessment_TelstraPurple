@@ -27,8 +27,15 @@
 						}
 					},
 					"sink": {
-						"type": "SqlPoolSink",
-						"allowCopyCommand": true
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
 					},
 					"enableStaging": false,
 					"translator": {
@@ -39,7 +46,7 @@
 									"ordinal": 1
 								},
 								"sink": {
-									"name": "id"
+									"ordinal": 1
 								}
 							},
 							{
@@ -47,7 +54,7 @@
 									"ordinal": 2
 								},
 								"sink": {
-									"name": "addresline1"
+									"ordinal": 2
 								}
 							},
 							{
@@ -55,7 +62,7 @@
 									"ordinal": 3
 								},
 								"sink": {
-									"name": "addressline2"
+									"ordinal": 3
 								}
 							},
 							{
@@ -63,7 +70,7 @@
 									"ordinal": 4
 								},
 								"sink": {
-									"name": "city"
+									"ordinal": 4
 								}
 							},
 							{
@@ -71,7 +78,7 @@
 									"ordinal": 5
 								},
 								"sink": {
-									"name": "State"
+									"ordinal": 5
 								}
 							},
 							{
@@ -79,7 +86,7 @@
 									"ordinal": 6
 								},
 								"sink": {
-									"name": "Country"
+									"ordinal": 6
 								}
 							},
 							{
@@ -87,7 +94,7 @@
 									"ordinal": 7
 								},
 								"sink": {
-									"name": "uniqueid"
+									"ordinal": 7
 								}
 							},
 							{
@@ -95,7 +102,7 @@
 									"ordinal": 8
 								},
 								"sink": {
-									"name": "CreatedTime"
+									"ordinal": 8
 								}
 							}
 						]
@@ -109,7 +116,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SqlPoolTable1",
+						"referenceName": "mysalescsv",
 						"type": "DatasetReference"
 					}
 				]
