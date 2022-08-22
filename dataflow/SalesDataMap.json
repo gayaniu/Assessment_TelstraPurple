@@ -5,19 +5,11 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "csvService",
-						"type": "DatasetReference"
-					},
 					"name": "DiscuntData"
 				}
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "AzureSQLSInk",
-						"type": "DatasetReference"
-					},
 					"name": "SinktoDB"
 				}
 			],
@@ -35,18 +27,12 @@
 				"          new as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: true,",
-				"     ignoreNoFilesFound: false) ~> DiscuntData",
+				"     validateSchema: true) ~> DiscuntData",
 				"DiscuntData sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> SinktoDB"
+				"     format: 'table') ~> SinktoDB"
 			]
 		}
 	}
