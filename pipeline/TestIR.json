@@ -29,7 +29,7 @@
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
@@ -47,7 +47,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "salesAddressesCsv",
+						"referenceName": "sink_data_set_csv",
 						"type": "DatasetReference"
 					}
 				]
